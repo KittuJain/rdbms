@@ -93,6 +93,57 @@ select count(id) "count" from employee where salary>60000;
 -- pseudo column describe --->>> 
 -- list only one record from the table--->>
 select * from employee where rownum<2;
-
-
 select id, rownum from employee where gender = 'F';
+
+-- get all employees emp_name, emp_id, dept_id from employee table
+select id,name,dept_id from employee;
+
+-- joining two tables to get data from two tables--
+SELECT E.ID, E.NAME, D.DEPT_NAME FROM EMPLOYEE E, DEPARTMENT D WHERE E.DEPT_ID = D.ID;
+
+------------------------------ OR ------------------------------join or natural join
+
+SELECT E.ID, E.NAME, D.DEPT_NAME FROM EMPLOYEE E JOIN DEPARTMENT D ON E.DEPT_ID = D.ID;
+
+
+-- if dept_id would have named same in both tables --
+SELECT E.ID, E.NAME, D.DEPT_NAME FROM EMPLOYEE E JOIN DEPARTMENT D ON DEPT_ID;
+SELECT E.ID, E.NAME, D.DEPT_NAME FROM EMPLOYEE E NATURAL JOIN DEPARTMENT D ON (E.DEPT_ID = D.ID);
+
+
+-- almost same as the one above
+SELECT * FROM EMPLOYEE E JOIN DEPARTMENT D ON E.DEPT_ID = D.ID;
+
+
+------------------------ cross join as cartesian join gives product of both rows ------------------------
+SELECT * FROM EMPLOYEE E, DEPARTMENT D;
+SELECT E.ID, E.NAME, D.ID, D.DEPT_NAME FROM EMPLOYEE E, DEPARTMENT D;
+
+
+-------------- all employees that belong PRODUCTION dept_id --------------
+SELECT E.* 
+FROM EMPLOYEE E JOIN DEPARTMENT D ON (E.DEPT_ID = D.ID)
+WHERE D.DEPT_NAME = 'PRODUCTION';
+
+
+----------------------------------- TOTAL SALARY DRAWN BY FEMALES IN SALES DEPT. -----------------------------------
+SELECT SUM(E.SALARY) 
+	FROM EMPLOYEE E JOIN DEPARTMENT D 
+	ON (E.DEPT_ID = D.ID) 
+	WHERE D.DEPT_NAME = 'SALES' AND E.GENDER = 'F';
+
+
+---------------------- AVG SALARY OF MALES WORKING IN MARKETING DEPT ----------------------
+SELECT AVG(E.SALARY) 
+	FROM EMPLOYEE E JOIN DEPARTMENT D 
+	ON (E.DEPT_ID = D.ID) 
+	WHERE D.DEPT_NAME = 'MARKETING' AND E.GENDER = 'M';
+
+
+-------------------- GET THE AVG SALARY OF EMPLOYEES WORKING IN BOTH SALES N MARKETING  ----------------
+SELECT AVG(E.SALARY) 
+	FROM EMPLOYEE E JOIN DEPARTMENT D 
+	ON (E.DEPT_ID = D.ID) 
+	WHERE D.DEPT_NAME = 'MARKETING' OR D.DEPT_NAME = 'SALES';
+
+---------------------------------- DEPTS WHO DON'T HAVE EMPLOYEES ----------------------------------
