@@ -68,13 +68,15 @@ COMMIT;
 INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAA','ABCXX1000Z','M',9999900001,20000,2002);
 INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAB','ABCXX1001Z','M',9999900002,18500,2001);
 INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAC','ABCXX1002Z','F',9999900003,63000,2001);
-INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAD','ABCXX1003Z','M',9999900004,7500,2003);
+INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAD','ABCXX1003Z','M',9999900004,7500, 2003);
 INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAE','ABCXX1004Z','F',9999900005,30000,2002);
 INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAF','ABCXX1005Z','F',9999900006,24000,2001);
 INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAF','ABCXX1006Z','F',9999900007,52000,2002);
 INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAG','ABCXX1007Z','M',9999900008,14000,2003);
 INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAH','ABCXX1008Z','M',9999900009,18500,2003);
 INSERT INTO employee VALUES (seq_emp_id.nextval,'AAAI','ABCXX1009Z','M',9999900010,18500,2001);
+INSERT INTO employee(id,name,pan_number,gender,cell_phone,salary) 
+VALUES (seq_emp_id.nextval,'AAAJ','ABCXX1010Z','F',9999900011,20500);
 
 COMMIT;
 
@@ -115,8 +117,8 @@ SELECT E.ID, E.NAME, D.DEPT_NAME FROM EMPLOYEE E NATURAL JOIN DEPARTMENT D ON (E
 SELECT * FROM EMPLOYEE E JOIN DEPARTMENT D ON E.DEPT_ID = D.ID;
 
 
------------------------- cross join as cartesian join gives product of both rows ------------------------
-SELECT * FROM EMPLOYEE E, DEPARTMENT D;
+------------------------ cross join as cartesian join gives product of both rows 40 rows------------------------
+
 SELECT E.ID, E.NAME, D.ID, D.DEPT_NAME FROM EMPLOYEE E, DEPARTMENT D;
 
 
@@ -147,3 +149,50 @@ SELECT AVG(E.SALARY)
 	WHERE D.DEPT_NAME = 'MARKETING' OR D.DEPT_NAME = 'SALES';
 
 ---------------------------------- DEPTS WHO DON'T HAVE EMPLOYEES ----------------------------------
+
+
+-------------all employees name and dept_name----------------------------------------
+SELECT E.NAME, D.DEPT_NAME 
+	FROM EMPLOYEE E JOIN DEPARTMENT D 
+	ON (E.DEPT_ID = D.ID);
+
+------------inserting transport in dept
+INSERT INTO department VALUES (2005,'TRANSPORT');
+
+-------------------------left outer join-----------------11 rows
+SELECT * 
+	FROM EMPLOYEE E LEFT OUTER JOIN DEPARTMENT D 
+	ON (E.DEPT_ID = D.ID);
+
+-------------------------- right outer join-----------12 rows
+SELECT * 
+	FROM EMPLOYEE E RIGHT OUTER JOIN DEPARTMENT D 
+	ON (E.DEPT_ID = D.ID);
+
+----------------------- right outer join 11 rows -------------
+SELECT * 
+	FROM DEPARTMENT D RIGHT OUTER JOIN EMPLOYEE E  
+	ON (E.DEPT_ID = D.ID);
+
+----------all employee names and dept_name----------
+SELECT * 
+	FROM EMPLOYEE E FULL OUTER JOIN DEPARTMENT D  
+	ON (E.DEPT_ID = D.ID);
+
+---all employees who work in production and sales
+
+SELECT E.NAME 
+	FROM EMPLOYEE E JOIN DEPARTMENT D 
+	ON (E.DEPT_ID = D.ID) 
+	WHERE D.DEPT_NAME = 'PRODUCTION' OR D.DEPT_NAME = 'SALES';
+
+SELECT E.NAME 
+	FROM EMPLOYEE E JOIN DEPARTMENT D 
+	ON (E.DEPT_ID = D.ID) 
+	WHERE D.DEPT_NAME IN ('PRODUCTION','SALES');
+
+--employeees who don't work in production and sales
+SELECT E.NAME 
+	FROM EMPLOYEE E JOIN DEPARTMENT D 
+	ON (E.DEPT_ID = D.ID) 
+	WHERE D.DEPT_NAME NOT IN ('PRODUCTION','SALES');
