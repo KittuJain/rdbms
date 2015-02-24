@@ -196,7 +196,21 @@ SELECT E.NAME
 	FROM EMPLOYEE E JOIN DEPARTMENT D 
 	ON (E.DEPT_ID = D.ID) 
 	WHERE D.DEPT_NAME NOT IN ('PRODUCTION','SALES');
-	
+
 ----select all employees with full details of production sector
 SELECT E.* FROM EMPLOYEE E JOIN DEPARTMENT D ON (E.DEPT_ID = D.ID) 
 	WHERE D.DEPT_NAME IN ('PRODUCTION');
+
+------------ view in db table for other users it is basically a stored query
+-- 2 types of views are ->>> view and a materialised view
+----- grant permission to emp_user to create view
+CONNECT / AS SYSDBA;
+GRANT CREATE VIEW TO emp_user;
+
+connect emp_user/password;
+
+CREATE VIEW PRODUCTION_EMPLOYEES AS 
+	SELECT E.* FROM EMPLOYEE E JOIN DEPARTMENT D ON (E.DEPT_ID = D.ID) 
+	WHERE D.DEPT_NAME IN ('PRODUCTION');
+
+SELECT * FROM PRODUCTION_EMPLOYEES;
