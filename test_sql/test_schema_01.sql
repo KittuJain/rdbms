@@ -1,4 +1,3 @@
-
 conn / as sysdba
 
 PROMPT 'Creating Tablespaces'
@@ -54,8 +53,8 @@ CREATE SEQUENCE seq_emp_id START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 
 
 -- Let us add SALARY column to employee table
-ALTER TABLE employee ADD (salary number(10) );
-ALTER TABLE employee ADD (dept_id NUMBER(10) );
+ALTER TABLE employee ADD (salary number(10));
+ALTER TABLE employee ADD (dept_id NUMBER(10));
 
 -- Insert sample data
 INSERT INTO department VALUES (2001,'PRODUCTION');
@@ -221,10 +220,51 @@ CREATE USER reporter IDENTIFIED BY reporter DEFAULT TABLESPACE ts_emp_system QUO
 CONNECT emp_user/password;
 GRANT SELECT ON PRODUCTION_EMPLOYEES TO reporter;
 COMMIT;
+CONNECT / AS SYSDBA;
 GRANT CREATE SESSION TO reporter;
 GRANT RESOURCE TO reporter;
+COMMIT;
 CONNECT reporter/reporter;
 SELECT * FROM emp_user.PRODUCTION_EMPLOYEES;
-
 ---------create synonymns-------
--- public synonymn private synonymn
+--------- public synonymn private synonymn ------------------
+-- CREATE SYNONYM prod_emp FOR emp.PRODUCTION_EMPLOYEES;
+-- SELECT * FROM prod_emp;
+
+----create or replace view-----drops and creates a new view it overrides existing one -- recrerated definition
+select * from all_views where rownum<2;
+
+-----union in sets------
+-- two sets (a b) and (a b c) have a union as (a b c) taken common once
+----- intersects in sets------
+-- two sets (a b) and (a b c) have a intersect as (a b) only common between both
+--- minus in sets--------
+-- two sets (a b) and (a b c) have a minus as (c)
+-- get emp_id and emp_name whose dept_id is 2001 and 2002
+CONNECT emp_user/password;
+SELECT ID, NAME FROM EMPLOYEE WHERE DEPT_ID = 2001 OR DEPT_ID = 2002;
+SELECT ID, NAME FROM EMPLOYEE WHERE DEPT_ID = 2002;
+SELECT ID, NAME FROM EMPLOYEE WHERE DEPT_ID = 2001;
+-- UNION IS APPLICABLE ONLY WHEN SELECTION IS COMMON --
+SELECT ID, NAME FROM EMPLOYEE WHERE DEPT_ID = 2001 UNION SELECT ID, NAME FROM EMPLOYEE WHERE DEPT_ID = 2002;
+SELECT ID, NAME FROM EMPLOYEE WHERE DEPT_ID IN(2001) UNION SELECT ID, NAME FROM EMPLOYEE WHERE DEPT_ID IN(2002);
+-- SELECT ID, NAME FROM EMPLOYEE WHERE DEPT_ID IN(2001) UNION SELECT ID, NAME FROM EMPLOYEE WHERE DEPT_ID IN(2002);
+
+CREATE VIEW SALES_EMPLOYEES AS 
+	SELECT E.* FROM EMPLOYEE E JOIN DEPARTMENT D ON (E.DEPT_ID = D.ID) 
+	WHERE D.DEPT_NAME IN ('SALES');
+
+COMMIT;
+--- SIX ROWS------
+SELECT NAME FROM PRODUCTION_EMPLOYEES UNION SELECT NAME FROM SALES_EMPLOYEES;
+--- SEVEN ROWS----- union all ------------
+SELECT ID FROM PRODUCTION_EMPLOYEES UNION SELECT ID FROM SALES_EMPLOYEES;
+SELECT NAME FROM PRODUCTION_EMPLOYEES UNION ALL SELECT NAME FROM SALES_EMPLOYEES;
+
+SELECT NAME FROM PRODUCTION_EMPLOYEES INTERSECT SELECT NAME FROM SALES_EMPLOYEES;
+SELECT ID,NAME FROM PRODUCTION_EMPLOYEES UNION SELECT ID,NAME FROM SALES_EMPLOYEES;
+
+------ self join 
+-- hierarchical data model
+ALTER TABLE employee ADD (manager_id NUMBER(10));
+COMMIT;
