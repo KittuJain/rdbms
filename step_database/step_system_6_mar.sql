@@ -1,6 +1,6 @@
 -- create a system where people can apply for STEP program
 
-Candidate 
+Candidate while filling Form
 	Name
 	Gender
 	Address
@@ -12,7 +12,7 @@ Candidate
 	college
 	percentage
 	10th standard roll_number
-	Diploma Holder
+	Diploma Holder(Eligibility for applying)
 	Previously Applied(constraint of yes/no)
 
 Form Submission
@@ -20,5 +20,6 @@ Form Submission
 	Name
 	Exam Center(Place)
 
-
--- READ FUNCTION DECODE	-- 
+Exam Center Info
+	Number of Applicants
+	Applicant IDs
